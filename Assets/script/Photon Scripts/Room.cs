@@ -1,15 +1,21 @@
+using Photon.Pun;
 using Photon.Realtime;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Room : MonoBehaviour
 {
-    public Text Name;
-    public void JoinRoom()
+    [SerializeField] private Text nameText;
+    [SerializeField] private Text playersText;
+
+    public void SetRoomInfo(RoomInfo roomInfo)
     {
-        GameObject.Find("JoinorCreate room").GetComponent<createorjoinroom>().JoinRoomList(Name.text);
+        nameText.text = roomInfo.Name;
+        playersText.text = roomInfo.PlayerCount + "/" + roomInfo.MaxPlayers;
     }
 
+    public void JoinRoom()
+    {
+        PhotonNetwork.JoinRoom(nameText.text);
+    }
 }
