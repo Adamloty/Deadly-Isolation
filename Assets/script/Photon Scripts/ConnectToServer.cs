@@ -39,7 +39,10 @@ public class ConnectToServer : MonoBehaviourPunCallbacks
     }
     public override void OnConnectedToMaster()
     {
-        PhotonNetwork.JoinLobby(TypedLobby.Default);
+       // PhotonNetwork.JoinLobby(TypedLobby.Default);
+        TypedLobby sqlLobby = new TypedLobby("myLobby", LobbyType.SqlLobby);
+        PhotonNetwork.JoinLobby(sqlLobby);
+
     }
     public override void OnJoinedLobby()
     {

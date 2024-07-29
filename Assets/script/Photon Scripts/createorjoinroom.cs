@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
@@ -10,6 +10,7 @@ public class createorjoinroom : MonoBehaviourPunCallbacks
     [SerializeField] private TMP_InputField createinput;
     [SerializeField] private TMP_InputField joininput;
     private bool Updatelist;
+    private TypedLobby sqlLobby = new TypedLobby("myLobby", LobbyType.SqlLobby);
     // Start is called before the first frame update
     void Start()
     {
@@ -60,7 +61,13 @@ public class createorjoinroom : MonoBehaviourPunCallbacks
     {
         if(PhotonNetwork.InLobby)
         {
-            PhotonNetwork.CreateRoom(createinput.text);
+            RoomOptions roomOptions = new RoomOptions();
+            roomOptions.MaxPlayers = 4; // الحد الأقصى لعدد اللاعبين في الغرفة
+            roomOptions.IsVisible = true; // جعل الغرفة مرئية
+            roomOptions.IsOpen = true; // جعل الغرفة مفتوحة للانضمام
+            roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable() { { "C0", 1 } };
+            roomOptions.CustomRoomPropertiesForLobby = new string[] { "C0" };
+            PhotonNetwork.CreateRoom(createinput.text, roomOptions, sqlLobby);
         }
        
     }

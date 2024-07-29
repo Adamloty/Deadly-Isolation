@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 71159ac194173cd438350a44bb6e1012
+guid: 376fa907ebfc61d44aaef11e7e0b9870
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Buffied
+  - FF Bouya
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

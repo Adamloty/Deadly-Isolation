@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using UnityEditor.Experimental.GraphView;
+//using UnityEditor.Experimental.GraphView;
 
 
 public class dropDrowngarabice : MonoBehaviour
@@ -11,6 +11,8 @@ public class dropDrowngarabice : MonoBehaviour
     [SerializeField] private TMP_Dropdown lang;
     public GameObject Arb;
     public GameObject English;
+    public GameObject Arbtitle;
+    public GameObject Englishtitle;
     void Start()
     {
         
@@ -21,7 +23,8 @@ public class dropDrowngarabice : MonoBehaviour
         {
             Arb.SetActive(false);
            English.SetActive(true);
-
+            Arbtitle.SetActive(false);
+            Englishtitle.SetActive(true);
 
 
 
@@ -30,6 +33,8 @@ public class dropDrowngarabice : MonoBehaviour
         {
             Arb.SetActive(true);
             English.SetActive(false);
+            Arbtitle.SetActive(true);
+            Englishtitle.SetActive(false);
 
         }
     }

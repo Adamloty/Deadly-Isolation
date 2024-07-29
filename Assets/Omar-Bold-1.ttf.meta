@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9c34e355aedc1c44784309185502912b
+guid: 064eeaeabfe0bcd4897d772a8a8095fc
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Spiderfingers
+  - Omar
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
