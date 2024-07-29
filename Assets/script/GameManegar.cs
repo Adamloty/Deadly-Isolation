@@ -26,4 +26,9 @@ public class GameManegar : MonoBehaviourPunCallbacks
     {
         Application.Quit();
     }
+    public void Cursorvisible()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
 }
