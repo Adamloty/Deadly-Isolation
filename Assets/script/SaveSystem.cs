@@ -42,4 +42,22 @@ public class SaveSystem : MonoBehaviour
     {
         SceneManager.LoadScene("Loading");
     }
+    public void SaveString(string key,string save)
+    {
+        PlayerPrefs.SetString(key,save);
+        
+    }
+    public void SaveFloat(string key, float save)
+    {
+        PlayerPrefs.SetFloat(key, save);
+
+    }
+    public string LoadString(string key)
+    {
+       return PlayerPrefs.GetString(key);
+    }
+    public float LoadFloat(string key)
+    {
+        return PlayerPrefs.GetFloat(key);
+    }
 }
