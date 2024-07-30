@@ -21,7 +21,6 @@ public class cc : MonoBehaviour
         //{
             //move=this.transform.parent.GetComponent<Move>();
             Cursorvisible();
-            spead = PlayerPrefs.GetFloat("sense");
         //}
     }
 
