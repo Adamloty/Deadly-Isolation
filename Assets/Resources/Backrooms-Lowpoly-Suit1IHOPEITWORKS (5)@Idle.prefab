@@ -897,8 +897,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44619ce1f35efda4ca710529ab7c05d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jump: 10
-  speed: 6
+  jump: 7
+  speed: 4
   Username: {fileID: 9016687142950362921}
 --- !u!114 &8052049375672339983
 MonoBehaviour:
