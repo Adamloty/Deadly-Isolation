@@ -62,7 +62,7 @@ public class move : MonoBehaviourPunCallbacks
                         anim.SetBool("Walk", true);
                         anim.SetBool("Run", false);
                     }
-                    if (speed == 4)
+                    if (speed == 2)
                     {
                         anim.SetBool("Walk", false);
                         anim.SetBool("Run", true);
@@ -82,7 +82,7 @@ public class move : MonoBehaviourPunCallbacks
                 }
                 if (Input.GetKeyDown(KeyCode.LeftShift))
                 {
-                    speed = 4f;
+                    speed = 2f;
                 }
                 if (Input.GetKeyUp(KeyCode.LeftShift))
                 {
