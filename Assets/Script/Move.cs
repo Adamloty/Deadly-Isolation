@@ -11,21 +11,23 @@ public class move : MonoBehaviourPunCallbacks
 {
     private float Gravity = 20f;
     [SerializeField] private float jump = 20f;
-    public float speed = 6f;
+    public float speed = 1f;
     Vector3 moveDirection = Vector3.zero;
     private CharacterController ch;
     private PhotonView pv;
     private Animator anim;
     [SerializeField] private TextMeshPro Username;
-  
+
     // Start is called before the first frame update
     void Start()
     {
+        anim = GetComponent<Animator>();
         ch = GetComponent<CharacterController>();
         pv = GetComponent<PhotonView>();
-        if(pv.IsMine)
+        if (pv.IsMine)
         {
-            anim = GetComponent<Animator>();
+           
+      
             Destroy(transform.GetChild(20).gameObject);
         }
         if(!pv.IsMine)
@@ -33,6 +35,8 @@ public class move : MonoBehaviourPunCallbacks
             Destroy(transform.GetChild(21).gameObject);
            
         }
+   
+       
     }
 
     // Update is called once per frame
@@ -41,8 +45,9 @@ public class move : MonoBehaviourPunCallbacks
     
         if (pv.IsMine)
         {
+
+            PhotonNetwork.NickName = PlayerPrefs.GetString("ur");
             pv.RPC("TakeName", RpcTarget.All, PlayerPrefs.GetString("ur"));
-            
             Username.gameObject.SetActive(false);
             if (ch.isGrounded)
             {
@@ -52,12 +57,12 @@ public class move : MonoBehaviourPunCallbacks
                 if (Input.GetAxisRaw("Vertical") != 0 || Input.GetAxisRaw("Horizontal") != 0)
                 {
                    // anim.SetBool("", false);
-                    if (speed == 6 && !Input.GetKey(KeyCode.LeftShift))
+                    if (speed == 1 && !Input.GetKey(KeyCode.LeftShift))
                     {
                         anim.SetBool("Walk", true);
                         anim.SetBool("Run", false);
                     }
-                    if (speed == 12)
+                    if (speed == 4)
                     {
                         anim.SetBool("Walk", false);
                         anim.SetBool("Run", true);
@@ -77,11 +82,11 @@ public class move : MonoBehaviourPunCallbacks
                 }
                 if (Input.GetKeyDown(KeyCode.LeftShift))
                 {
-                    speed = 12f;
+                    speed = 4f;
                 }
                 if (Input.GetKeyUp(KeyCode.LeftShift))
                 {
-                    speed = 6f;
+                    speed = 1f;
                 }
             }
             moveDirection.y -= Gravity * Time.deltaTime;
@@ -103,19 +108,19 @@ public class move : MonoBehaviourPunCallbacks
        // {
            // if(other.CompareTag("Player"))
            // {
-                if (other.CompareTag("bulite"))
-                {
-                    PhotonNetwork.Destroy(this.gameObject);
-                    try
-                    {
-                        PhotonNetwork.LoadLevel(1);
-                    }
-                    catch
-                    {
-                        SceneManager.LoadScene(1);
-                    }
+                //if (other.CompareTag("bulite"))
+                //{
+                //    PhotonNetwork.Destroy(this.gameObject);
+                //    try
+                //    {
+                //        PhotonNetwork.LoadLevel(1);
+                //    }
+                //    catch
+                //    {
+                //        SceneManager.LoadScene(1);
+                //    }
 
-                }
+                //}
             //}
      //   }
    
@@ -145,6 +150,7 @@ public class move : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.LoadLevel(1);
     }
+
     //private void Animation()
     //{
     //    if(Input.GetAxisRaw("Vertical")!=0||Input.GetAxisRaw("Horizontal")!=0)
@@ -172,6 +178,29 @@ public class move : MonoBehaviourPunCallbacks
     //        anim.SetBool("Walk", false);
     //        anim.SetBool("Run", false);
     //    }
+
+    //}
+    //private void Awake()
+    //{
+    //   // if (pv.IsMine)
+    //  //  {
+    //    try
+    //    {
+    //        if (PlayerLeftanim == null)
+    //        {
+    //            PlayerLeftanim = GameObject.FindWithTag("PlayerLeft").GetComponent<Animator>();
+    //        }
+    //        if (PlayerLeftanim != null && PlayerLeftanim == null)
+    //        {
+    //            playerleftname = PlayerLeftanim.gameObject.GetComponentInChildren<Text>();
+    //        }
+    //    }
+    //    catch
+    //    {
+    //        print("Nothing");
+    //    }
+
+    //   // }
 
     //}
 }

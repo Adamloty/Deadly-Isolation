@@ -13,6 +13,8 @@ public class dropDrowngarabice : MonoBehaviour
     public GameObject English;
     public GameObject Arbtitle;
     public GameObject Englishtitle;
+    //[SerializeField] private GameObject SittingsArab;
+    //[SerializeField] private GameObject SittingsEnglish;
     void Start()
     {
         
@@ -25,7 +27,8 @@ public class dropDrowngarabice : MonoBehaviour
            English.SetActive(true);
             Arbtitle.SetActive(false);
             Englishtitle.SetActive(true);
-
+            //SittingsEnglish.SetActive(true);
+            //SittingsArab.SetActive(false);
 
 
         }
@@ -35,7 +38,8 @@ public class dropDrowngarabice : MonoBehaviour
             English.SetActive(false);
             Arbtitle.SetActive(true);
             Englishtitle.SetActive(false);
-
+            //SittingsEnglish.SetActive(false);
+            //SittingsArab.SetActive(true);
         }
     }
 }

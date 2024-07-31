@@ -33,7 +33,8 @@ public class Chat : MonoBehaviour
     [PunRPC]
     public void GetMessage(string ReciveMessage)
     {
-        GameObject M = Instantiate(Message, Vector3.zero,Quaternion.identity, content.transform);
+        GameObject M = Instantiate(Message, Vector3.zero,Quaternion.identity,content.transform);
+       // M.transform.SetParent(content.transform);
         M.GetComponent<Message>().message.text =ReciveMessage;
     }
 }

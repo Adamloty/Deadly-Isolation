@@ -33,7 +33,14 @@ public class RoomList : MonoBehaviourPunCallbacks
 
     private void RequestRoomList()
     {
-        PhotonNetwork.GetCustomRoomList(sqlLobby, "C0=1");
+        if(PhotonNetwork.IsConnected)
+        {
+            if(PhotonNetwork.InLobby)
+            {
+                PhotonNetwork.GetCustomRoomList(sqlLobby, "C0=1");
+            }
+        }
+       
     }
     private void Update()
     {

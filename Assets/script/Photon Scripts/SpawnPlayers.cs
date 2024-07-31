@@ -11,9 +11,9 @@ public class SpawnPlayers : MonoBehaviour
     [SerializeField]private float maxX;
     [SerializeField]private float minZ;
     [SerializeField]private float maxZ;
-    [SerializeField] private GameObject bulites;
+   // [SerializeField] private GameObject bulites;
     //[SerializeField] public GameObject[] Players;
-    private Color takecolor;
+    //private Color takecolor;
    
    // RoomInfo roomInfo;
   //  RoomOptions roomOptions;
@@ -25,10 +25,10 @@ public class SpawnPlayers : MonoBehaviour
         //    Destroy(GameObject.FindWithTag("bulite"));
         //}
         
-        takecolor = Random.ColorHSV();
-        Vector3 spawnpos = new Vector3(Random.Range(this.transform.position.x+minX,this.transform.position.x+maxX),20, Random.Range(this.transform.position.z+minZ,this.transform.position.z+maxZ));
+       // takecolor = Random.ColorHSV();
+        Vector3 spawnpos = new Vector3(Random.Range(this.transform.position.x+minX,this.transform.position.x+maxX),this.transform.position.y, Random.Range(this.transform.position.z+minZ,this.transform.position.z+maxZ));
         GameObject Player= PhotonNetwork.Instantiate(player.name, spawnpos, Quaternion.identity);
-        Player.GetComponent<MeshRenderer>().material.color = takecolor;
+       // Player.GetComponent<MeshRenderer>().material.color = takecolor;
         //Players=new GameObject[Players.Length];
         //Players[Players.Length - 1] = Player;
 
