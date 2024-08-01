@@ -9,10 +9,14 @@ public class Chat : MonoBehaviour
     public InputField inputfield;
     public GameObject Message;
     public GameObject content;
+    private Animator chat;
+    private bool open;
+   // private bool close;
     // Start is called before the first frame update
     void Start()
     {
-        
+        chat=GetComponent<Animator>();
+        chat=transform.GetChild(1).GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -36,5 +40,23 @@ public class Chat : MonoBehaviour
         GameObject M = Instantiate(Message, Vector3.zero,Quaternion.identity,content.transform);
        // M.transform.SetParent(content.transform);
         M.GetComponent<Message>().message.text =ReciveMessage;
+    }
+    public void OpenChat()
+    {
+        if(!open)
+        {
+            chat.SetTrigger("Open");
+        }
+        open = true;
+       // close = false;
+    }
+    public void CloseChat()
+    {
+        if (open)
+        {
+            chat.SetTrigger("Close");
+        }
+        open = false;
+      //  close = true;
     }
 }
