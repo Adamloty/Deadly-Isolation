@@ -1,11 +1,13 @@
-using Photon.Pun;
+﻿using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Photon.Realtime;
+using Photon.Voice.PUN;
 using UnityEngine.SceneManagement;
+using Photon.Voice.Unity;
 //using System.Security.Cryptography;
 public class move : MonoBehaviourPunCallbacks
 {
@@ -17,6 +19,9 @@ public class move : MonoBehaviourPunCallbacks
     private PhotonView pv;
     private Animator anim;
     [SerializeField] private TextMeshPro Username;
+    private bool shiftdown;
+    private bool reconnecting = false;
+    private VoiceConnection voiceConnection;
 
     // Start is called before the first frame update
     void Start()
@@ -35,8 +40,12 @@ public class move : MonoBehaviourPunCallbacks
             Destroy(transform.GetChild(21).gameObject);
            
         }
-   
-       
+        voiceConnection = FindObjectOfType<VoiceConnection>();
+        if (voiceConnection == null)
+        {
+            Debug.LogError("VoiceConnection component not found. Please add it to your scene.");
+        }
+
     }
 
     // Update is called once per frame
@@ -52,8 +61,21 @@ public class move : MonoBehaviourPunCallbacks
             if (ch.isGrounded)
             {
                 moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-                moveDirection *= speed;
                 moveDirection = transform.TransformDirection(moveDirection);
+                if(Input.GetKeyDown(KeyCode.LeftControl))
+                {
+                    shiftdown = !shiftdown;
+                }
+                if(shiftdown)
+                {
+                    anim.SetBool("crouch", true);
+                    moveDirection *= speed-0.5f;
+                }
+                else
+                {
+                    anim.SetBool("crouch", false);
+                    moveDirection *= speed;
+                }
                 if (Input.GetAxisRaw("Vertical") != 0 || Input.GetAxisRaw("Horizontal") != 0)
                 {
                    // anim.SetBool("", false);
@@ -141,66 +163,79 @@ public class move : MonoBehaviourPunCallbacks
             //}
       //  }
     }
-    // [PunRPC]
+
+ 
+  
+
+    // سيتم استدعاء هذا الحدث عند انقطاع الاتصال
     public override void OnDisconnected(DisconnectCause cause)
     {
-        PhotonNetwork.LoadLevel(1);
+        Debug.LogWarningFormat("OnDisconnected() was called by PUN with reason {0}", cause);
+
+        if (!reconnecting)
+        {
+            reconnecting = true;
+            Invoke("Reconnect", 5); // الانتظار لمدة 5 ثوانٍ قبل إعادة المحاولة
+        }
     }
-    public override void OnLeftRoom()
+
+    // محاولة إعادة الاتصال
+    private void Reconnect()
     {
-        PhotonNetwork.LoadLevel(1);
+        if (PhotonNetwork.ReconnectAndRejoin())
+        {
+            Debug.Log("Reconnecting...");
+        }
+        else
+        {
+            Debug.LogError("Reconnect and rejoin failed. Retrying...");
+            Invoke("Reconnect", 5); // إعادة المحاولة بعد 5 ثوانٍ أخرى
+        }
     }
 
-    //private void Animation()
-    //{
-    //    if(Input.GetAxisRaw("Vertical")!=0||Input.GetAxisRaw("Horizontal")!=0)
-    //    {
-    //        if(speed==6&&!Input.GetKey(KeyCode.LeftShift))
-    //        {
-    //            anim.SetBool("Walk", true);
-    //            anim.SetBool("Run", false);
-    //        }
-    //        if (speed == 12)
-    //        {
-    //            anim.SetBool("Walk", false);
-    //            anim.SetBool("Run", true);
-    //        }
+    // سيتم استدعاء هذا الحدث عند النجاح في إعادة الانضمام للغرفة
+    public override void OnJoinedRoom()
+    {
+        reconnecting = false;
+        Debug.Log("Reconnected and rejoined the room successfully.");
 
+        // إعادة الاتصال بـ Photon Voice
+        ReconnectVoice();
+    }
 
-    //    }
-    //    else if (Input.GetAxisRaw("Vertical") == 0 && Input.GetAxisRaw("Horizontal") == 0)
-    //    {
-    //        anim.SetBool("Walk", false);
-    //        anim.SetBool("Run", false);
-    //    }
-    //    if(transform.position.y<-10)
-    //    {
-    //        anim.SetBool("Walk", false);
-    //        anim.SetBool("Run", false);
-    //    }
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.LogErrorFormat("OnJoinRoomFailed() was called by PUN with error code {0} and message {1}", returnCode, message);
+        Invoke("Reconnect", 5); // إعادة المحاولة بعد 5 ثوانٍ أخرى
+    }
 
-    //}
-    //private void Awake()
-    //{
-    //   // if (pv.IsMine)
-    //  //  {
-    //    try
-    //    {
-    //        if (PlayerLeftanim == null)
-    //        {
-    //            PlayerLeftanim = GameObject.FindWithTag("PlayerLeft").GetComponent<Animator>();
-    //        }
-    //        if (PlayerLeftanim != null && PlayerLeftanim == null)
-    //        {
-    //            playerleftname = PlayerLeftanim.gameObject.GetComponentInChildren<Text>();
-    //        }
-    //    }
-    //    catch
-    //    {
-    //        print("Nothing");
-    //    }
+    // إعادة الاتصال بـ Photon Voice
+    private void ReconnectVoice()
+    {
+        if (voiceConnection != null)
+        {
+            if (voiceConnection.ClientState == Photon.Realtime.ClientState.Joined)
+            {
+                Debug.Log("Photon Voice is already connected.");
+            }
+            else
+            {
+                Debug.Log("Reconnecting Photon Voice...");
+                voiceConnection.ConnectUsingSettings();
+            }
+        }
+    }
 
-    //   // }
+    // سيتم استدعاء هذا الحدث عند النجاح في الاتصال بـ Photon Voice
+    public override void OnConnectedToMaster()
+    {
+        Debug.Log("Photon Voice reconnected successfully.");
+    }
 
-    //}
+    // التعامل مع أخطاء الاتصال بـ Photon Voice
+    private void OnVoiceDisconnected(DisconnectCause cause)
+    {
+        Debug.LogErrorFormat("Failed to reconnect Photon Voice with reason {0}. Retrying...", cause);
+        Invoke("ReconnectVoice", 5); // إعادة المحاولة بعد 5 ثوانٍ أخرى
+    }
 }
