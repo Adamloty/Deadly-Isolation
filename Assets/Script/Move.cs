@@ -15,19 +15,20 @@ public class move : MonoBehaviourPunCallbacks
     [SerializeField] private float jump = 20f;
     public float speed = 1f;
     Vector3 moveDirection = Vector3.zero;
-    private CharacterController ch;
+   // private CharacterController ch;
     private PhotonView pv;
     private Animator anim;
     [SerializeField] private TextMeshPro Username;
     private bool shiftdown;
     private bool reconnecting = false;
     private VoiceConnection voiceConnection;
-
+    private Rigidbody rb;
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
-        ch = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
+        //ch = GetComponent<CharacterController>();
         pv = GetComponent<PhotonView>();
         if (pv.IsMine)
         {
@@ -49,7 +50,7 @@ public class move : MonoBehaviourPunCallbacks
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
     
         if (pv.IsMine)
@@ -58,18 +59,22 @@ public class move : MonoBehaviourPunCallbacks
             PhotonNetwork.NickName = PlayerPrefs.GetString("ur");
             pv.RPC("TakeName", RpcTarget.All, PlayerPrefs.GetString("ur"));
             Username.gameObject.SetActive(false);
-            if (ch.isGrounded)
-            {
+            //if (ch.isGrounded)
+         //   {
                 moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
                 moveDirection = transform.TransformDirection(moveDirection);
-                if(Input.GetKeyDown(KeyCode.LeftControl))
+                if(Input.GetKeyDown(KeyCode.LeftControl)||Input.GetKeyDown(KeyCode.LeftAlt))
                 {
                     shiftdown = !shiftdown;
+                    if(!shiftdown)
+                    {
+                         moveDirection.y = jump;
+                    }
                 }
                 if(shiftdown)
                 {
                     anim.SetBool("crouch", true);
-                    moveDirection *= speed-0.5f;
+                    moveDirection *= speed-50f;
                 }
                 else
                 {
@@ -79,12 +84,12 @@ public class move : MonoBehaviourPunCallbacks
                 if (Input.GetAxisRaw("Vertical") != 0 || Input.GetAxisRaw("Horizontal") != 0)
                 {
                    // anim.SetBool("", false);
-                    if (speed == 1 && !Input.GetKey(KeyCode.LeftShift))
+                    if (speed == 100 && !Input.GetKey(KeyCode.LeftShift))
                     {
                         anim.SetBool("Walk", true);
                         anim.SetBool("Run", false);
                     }
-                    if (speed == 2)
+                    if (speed == 160)
                     {
                         anim.SetBool("Walk", false);
                         anim.SetBool("Run", true);
@@ -104,16 +109,19 @@ public class move : MonoBehaviourPunCallbacks
                 }
                 if (Input.GetKeyDown(KeyCode.LeftShift))
                 {
-                    speed = 2f;
+                    speed = 160f;
                 }
                 if (Input.GetKeyUp(KeyCode.LeftShift))
                 {
-                    speed = 1f;
+                    speed = 100f;
                 }
-            }
-            moveDirection.y -= Gravity * Time.deltaTime;
-            ch.Move(moveDirection * Time.deltaTime);
+            rb.velocity = new Vector3(moveDirection.x*Time.fixedDeltaTime, moveDirection.y * Time.fixedDeltaTime, moveDirection.z*Time.fixedDeltaTime);
         }
+       
+        // transform.Translate(moveDirection);
+        //  moveDirection.y -= Gravity * Time.deltaTime;
+        //    ch.Move(moveDirection * Time.deltaTime);
+        // }
     }
 
     [PunRPC]
