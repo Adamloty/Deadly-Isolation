@@ -11,8 +11,8 @@ using Photon.Voice.Unity;
 //using System.Security.Cryptography;
 public class move : MonoBehaviourPunCallbacks
 {
-    private float Gravity = 20f;
-    [SerializeField] private float jump = 20f;
+    //private float Gravity = 20f;
+    [SerializeField] private float jump = 10000f;
     public float speed = 1f;
     Vector3 moveDirection = Vector3.zero;
    // private CharacterController ch;
@@ -23,6 +23,9 @@ public class move : MonoBehaviourPunCallbacks
     private bool reconnecting = false;
     private VoiceConnection voiceConnection;
     private Rigidbody rb;
+    private bool isGrounded;
+    public float gravityMultiplier = 0.5f;
+    public float minFallSpeed = -5f; // الحد الأدنى للسرعة أثناء النزول
     // Start is called before the first frame update
     void Start()
     {
@@ -50,7 +53,18 @@ public class move : MonoBehaviourPunCallbacks
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    private void FixedUpdate()
+    {
+        if (!isGrounded)
+        {
+            rb.AddForce(Physics.gravity * (gravityMultiplier - 1) * rb.mass);
+        }
+
+        // التحقق من إذا كان الكائن على الأرض باستخدام Raycast
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, 230f); // 
+
+    }
+    void Update()
     {
     
         if (pv.IsMine)
@@ -68,8 +82,10 @@ public class move : MonoBehaviourPunCallbacks
                     shiftdown = !shiftdown;
                     if(!shiftdown)
                     {
-                         moveDirection.y = jump;
-                    }
+                    //rb.velocity = new Vector3(0, 1, 0);
+                    //transform.Translate(0, jump-50, 0);
+                    rb.AddForce(Vector3.up * (jump-50), ForceMode.Impulse);
+                }
                 }
                 if(shiftdown)
                 {
@@ -84,15 +100,16 @@ public class move : MonoBehaviourPunCallbacks
                 if (Input.GetAxisRaw("Vertical") != 0 || Input.GetAxisRaw("Horizontal") != 0)
                 {
                    // anim.SetBool("", false);
-                    if (speed == 100 && !Input.GetKey(KeyCode.LeftShift))
+                    if (speed == 200 && !Input.GetKey(KeyCode.LeftShift))
                     {
                         anim.SetBool("Walk", true);
                         anim.SetBool("Run", false);
                     }
-                    if (speed == 160)
+                    if (speed == 300)
                     {
                         anim.SetBool("Walk", false);
                         anim.SetBool("Run", true);
+                        shiftdown = false;
                     }
 
 
@@ -105,17 +122,24 @@ public class move : MonoBehaviourPunCallbacks
                 if (Input.GetButtonDown("Jump"))
                 {
                     anim.SetTrigger("Jump");
-                    moveDirection.y = jump;
+                    rb.AddForce(Vector3.up * jump, ForceMode.Impulse);
+                     // transform.Translate(0, jump, 0);
                 }
                 if (Input.GetKeyDown(KeyCode.LeftShift))
                 {
-                    speed = 160f;
+                    speed = 300f;
                 }
                 if (Input.GetKeyUp(KeyCode.LeftShift))
                 {
                     speed = 100f;
                 }
-            rb.velocity = new Vector3(moveDirection.x*Time.fixedDeltaTime, moveDirection.y * Time.fixedDeltaTime, moveDirection.z*Time.fixedDeltaTime);
+            rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z);
+
+            if (rb.velocity.y > minFallSpeed)
+            {
+                rb.velocity = new Vector3(rb.velocity.x, minFallSpeed, rb.velocity.z);
+                print("yes");
+            }
         }
        
         // transform.Translate(moveDirection);
