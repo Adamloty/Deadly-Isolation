@@ -11,7 +11,7 @@ using Photon.Voice.Unity;
 //using System.Security.Cryptography;
 public class move : MonoBehaviourPunCallbacks
 {
-    //private float Gravity = 20f;
+    [SerializeField]private float Gravity = 10f;
     [SerializeField] private float jump = 10000f;
     public float speed = 1f;
     Vector3 moveDirection = Vector3.zero;
@@ -55,17 +55,22 @@ public class move : MonoBehaviourPunCallbacks
     // Update is called once per frame
     private void FixedUpdate()
     {
-        if (!isGrounded)
+        if (isGrounded)
         {
             rb.AddForce(Physics.gravity * (gravityMultiplier - 1) * rb.mass);
         }
+        else
+        {
+            rb.AddForce(Physics.gravity * (gravityMultiplier +Gravity) * rb.mass);
+        }
 
         // التحقق من إذا كان الكائن على الأرض باستخدام Raycast
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, 230f); // 
+        //isGrounded = Physics.Raycast(transform.position, Vector3.down, 230f); // 
 
     }
     void Update()
     {
+        print(isGrounded);
     
         if (pv.IsMine)
         {
@@ -90,7 +95,7 @@ public class move : MonoBehaviourPunCallbacks
                 if(shiftdown)
                 {
                     anim.SetBool("crouch", true);
-                    moveDirection *= speed-50f;
+                    moveDirection *= speed-200f;
                 }
                 else
                 {
@@ -100,12 +105,12 @@ public class move : MonoBehaviourPunCallbacks
                 if (Input.GetAxisRaw("Vertical") != 0 || Input.GetAxisRaw("Horizontal") != 0)
                 {
                    // anim.SetBool("", false);
-                    if (speed == 200 && !Input.GetKey(KeyCode.LeftShift))
+                    if (speed == 400 && !Input.GetKey(KeyCode.LeftShift))
                     {
                         anim.SetBool("Walk", true);
                         anim.SetBool("Run", false);
                     }
-                    if (speed == 300)
+                    if (speed == 600)
                     {
                         anim.SetBool("Walk", false);
                         anim.SetBool("Run", true);
@@ -135,11 +140,11 @@ public class move : MonoBehaviourPunCallbacks
                 }
             rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z);
 
-            if (rb.velocity.y > minFallSpeed)
-            {
-                rb.velocity = new Vector3(rb.velocity.x, minFallSpeed, rb.velocity.z);
-                print("yes");
-            }
+            //if (rb.velocity.y > minFallSpeed)
+            //{
+            //    rb.velocity = new Vector3(rb.velocity.x, minFallSpeed, rb.velocity.z);
+            //    print("yes");
+            //}
         }
        
         // transform.Translate(moveDirection);
@@ -269,5 +274,19 @@ public class move : MonoBehaviourPunCallbacks
     {
         Debug.LogErrorFormat("Failed to reconnect Photon Voice with reason {0}. Retrying...", cause);
         Invoke("ReconnectVoice", 5); // إعادة المحاولة بعد 5 ثوانٍ أخرى
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.transform.CompareTag("ground"))
+        {
+            isGrounded = true;
+        }
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        if(collision.transform.CompareTag("ground"))
+        {
+            isGrounded = false;
+        }
     }
 }

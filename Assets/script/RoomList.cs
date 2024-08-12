@@ -64,7 +64,7 @@ public class RoomList : MonoBehaviourPunCallbacks
         // إنشاء الغرف الجديدة
         foreach (RoomInfo roomInfo in roomList)
         {
-            if (roomInfo.IsOpen && roomInfo.IsVisible && roomInfo.PlayerCount > 0)
+            if (roomInfo.IsOpen && roomInfo.IsVisible && roomInfo.PlayerCount > 0 && roomInfo.MaxPlayers > roomInfo.PlayerCount)
             {
                 GameObject roomObj = Instantiate(roomPrefab, Vector3.zero, Quaternion.identity, GameObject.Find("Content").transform);
                 roomObj.GetComponent<Room>().SetRoomInfo(roomInfo);
