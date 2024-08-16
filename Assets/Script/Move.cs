@@ -23,9 +23,11 @@ public class move : MonoBehaviourPunCallbacks
     private bool reconnecting = false;
     private VoiceConnection voiceConnection;
     private Rigidbody rb;
-    private bool isGrounded;
-    public float gravityMultiplier = 0.5f;
-    public float minFallSpeed = -5f; // الحد الأدنى للسرعة أثناء النزول
+    private bool isGrounded=true;
+    [SerializeField] private float gravityMultiplier = 0.5f;
+    [SerializeField] private float minFallSpeed = -5f; // الحد الأدنى للسرعة أثناء النزول
+    [SerializeField] private float groundCheckDistance=1.0f;
+    [SerializeField] private LayerMask groundlayer;
     // Start is called before the first frame update
     void Start()
     {
@@ -63,7 +65,8 @@ public class move : MonoBehaviourPunCallbacks
         {
             rb.AddForce(Physics.gravity * (gravityMultiplier +Gravity) * rb.mass);
         }
-
+      //  RaycastHit hit;
+        //isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, groundCheckDistance,groundlayer);
         // التحقق من إذا كان الكائن على الأرض باستخدام Raycast
         //isGrounded = Physics.Raycast(transform.position, Vector3.down, 230f); // 
 
@@ -277,16 +280,21 @@ public class move : MonoBehaviourPunCallbacks
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.transform.CompareTag("ground"))
-        {
-            isGrounded = true;
-        }
+        //if (collision.transform.CompareTag("ground"))
+        //{
+        //    isGrounded = true;
+        //}
     }
     private void OnCollisionExit(Collision collision)
     {
-        if(collision.transform.CompareTag("ground"))
-        {
-            isGrounded = false;
-        }
+        //if(collision.transform.CompareTag("ground"))
+        //{
+        //    isGrounded = false;
+        //}
+    }
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawRay(transform.position, Vector3.down * groundCheckDistance);
     }
 }

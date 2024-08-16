@@ -1190,12 +1190,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44619ce1f35efda4ca710529ab7c05d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Gravity: 10
-  jump: 1000
+  Gravity: 70
+  jump: 3000
   speed: 400
   Username: {fileID: 9016687142950362921}
-  gravityMultiplier: 5
-  minFallSpeed: -50
+  gravityMultiplier: 20
+  minFallSpeed: -60
+  groundCheckDistance: 1
+  groundlayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!114 &8052049375672339983
 MonoBehaviour:
   m_ObjectHideFlags: 0
