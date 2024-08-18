@@ -1194,7 +1194,7 @@ MonoBehaviour:
   jump: 3000
   speed: 400
   Username: {fileID: 9016687142950362921}
-  gravityMultiplier: 20
+  gravityMultiplier: 30
   minFallSpeed: -60
   groundCheckDistance: 1
   groundlayer:
